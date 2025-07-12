@@ -3,6 +3,7 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -27,6 +28,8 @@ export default {
         'slide-up': 'slideUp 0.3s ease-out',
         'shimmer': 'shimmer 2s infinite',
         'slide-in': 'slideIn 0.3s ease-out',
+        'float': 'float 6s ease-in-out infinite',
+        'glow': 'glow 2s ease-in-out infinite alternate',
       },
       keyframes: {
         fadeIn: {
@@ -44,6 +47,14 @@ export default {
         slideIn: {
           '0%': { transform: 'translateX(100%)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        glow: {
+          '0%': { boxShadow: '0 0 5px rgba(139, 92, 246, 0.5)' },
+          '100%': { boxShadow: '0 0 20px rgba(139, 92, 246, 0.8)' },
         },
       },
       fontFamily: {
@@ -63,6 +74,11 @@ export default {
       },
       boxShadow: {
         'gesture': '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        'neon': '0 0 20px rgba(139, 92, 246, 0.6)',
+        'neon-pink': '0 0 20px rgba(236, 72, 153, 0.6)',
+      },
+      backdropBlur: {
+        'xs': '2px',
       },
     },
   },
