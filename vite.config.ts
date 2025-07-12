@@ -8,6 +8,10 @@ export default defineConfig({
     host: true,
     port: 3000,
     https: false, // Cambiar a true si necesitas HTTPS para la cámara
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
   },
   build: {
     outDir: 'dist',
