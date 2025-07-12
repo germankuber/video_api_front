@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000,
-    https: false, // Cambiar a true si necesitas HTTPS para la cámara
+    https: true, // Necesario para MediaPipe GPU delegate
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Embedder-Policy': 'require-corp',
