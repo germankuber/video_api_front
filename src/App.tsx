@@ -10,10 +10,10 @@ import Statistics from './components/Statistics';
 import GestureHistory from './components/GestureHistory';
 import ControlPanel from './components/ControlPanel';
 import GestureGallery from './components/GestureGallery';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 
 // Hand colors for landmarks
-const HAND_COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
+const HAND_COLORS = ['#8B5CF6', '#EC4899', '#06B6D4', '#10B981', '#F59E0B'];
 
 const GestureDetectionApp: React.FC = () => {
   const videoFeedRef = useRef<{
@@ -53,8 +53,8 @@ const GestureDetectionApp: React.FC = () => {
         setGestureRecognizer(recognizer);
         setIsLoading(false);
       } catch (err) {
-        console.error('Error inicializando MediaPipe:', err);
-        setError('Error al cargar MediaPipe. Verifica tu conexión a internet.');
+        console.error('Error initializing MediaPipe:', err);
+        setError('Failed to load AI engine. Please check your internet connection.');
         setIsLoading(false);
       }
     };
@@ -71,7 +71,7 @@ const GestureDetectionApp: React.FC = () => {
       }
       
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error('getUserMedia no está disponible en este navegador');
+        throw new Error('Camera access not available in this browser');
       }
 
       const mediaStream = await navigator.mediaDevices.getUserMedia({ 
@@ -89,8 +89,8 @@ const GestureDetectionApp: React.FC = () => {
         videoFeedRef.current.video.onloadedmetadata = () => {
           if (videoFeedRef.current?.video) {
             videoFeedRef.current.video.play()
-              .then(() => console.log('Video reproduciendo correctamente'))
-              .catch(error => console.error('Error al reproducir video:', error));
+              .then(() => console.log('Video playing successfully'))
+              .catch(error => console.error('Error playing video:', error));
           }
         };
         
@@ -98,18 +98,18 @@ const GestureDetectionApp: React.FC = () => {
         setError(null);
       }
     } catch (err) {
-      console.error('Error accediendo a la cámara:', err);
-      let errorMessage = 'Error al acceder a la cámara.';
+      console.error('Error accessing camera:', err);
+      let errorMessage = 'Failed to access camera.';
       
       if (err instanceof Error) {
         if (err.name === 'NotAllowedError') {
-          errorMessage = 'Permisos de cámara denegados. Por favor, permite el acceso a la cámara y recarga la página.';
+          errorMessage = 'Camera access denied. Please allow camera access and reload the page.';
         } else if (err.name === 'NotFoundError') {
-          errorMessage = 'No se encontró ninguna cámara. Verifica que tu dispositivo tenga una cámara conectada.';
+          errorMessage = 'No camera found. Please connect a camera and try again.';
         } else if (err.name === 'NotReadableError') {
-          errorMessage = 'La cámara está siendo usada por otra aplicación. Cierra otras apps que puedan estar usando la cámara.';
+          errorMessage = 'Camera is being used by another application. Please close other apps using the camera.';
         } else {
-          errorMessage = `Error de cámara: ${err.message}`;
+          errorMessage = `Camera error: ${err.message}`;
         }
       }
       
@@ -197,7 +197,7 @@ const GestureDetectionApp: React.FC = () => {
             setCurrentGestureDisplay(null);
           }
         } catch (err) {
-          console.error('Error detectando gestos:', err);
+          console.error('Error detecting gestures:', err);
         }
       }
     };
@@ -283,24 +283,24 @@ const GestureDetectionApp: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black flex items-center justify-center">
         <div className="text-center text-white">
           <div className="relative mb-8">
-            <div className="animate-spin rounded-full h-24 w-24 border-4 border-white/20 border-t-purple-400 mx-auto"></div>
+            <div className="w-24 h-24 border-4 border-white/10 border-t-violet-500 rounded-full animate-spin mx-auto"></div>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                <span className="text-2xl">🤖</span>
+              <div className="w-12 h-12 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full flex items-center justify-center">
+                <Loader2 className="h-6 w-6 text-white animate-spin" />
               </div>
             </div>
           </div>
-          <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Inicializando GestureAI
+          <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+            Initializing GestureAI
           </h2>
-          <p className="text-xl text-slate-300 mb-6">Preparando el reconocimiento de gestos...</p>
+          <p className="text-xl text-slate-300 mb-6">Loading AI engine and camera systems...</p>
           <div className="flex justify-center mt-6 space-x-2">
-            <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-            <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+            <div className="w-3 h-3 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+            <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-3 h-3 bg-fuchsia-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
           </div>
         </div>
       </div>
@@ -309,16 +309,16 @@ const GestureDetectionApp: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-red-900 to-slate-900 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8 backdrop-blur-xl bg-white/5 rounded-3xl border border-white/10">
-          <AlertCircle className="h-20 w-20 text-red-400 mx-auto mb-6 animate-pulse" />
-          <h2 className="text-3xl font-bold text-white mb-4">¡Oops! Algo salió mal</h2>
+      <div className="min-h-screen bg-gradient-to-br from-black via-red-900/20 to-black flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8 bg-black/50 backdrop-blur-xl rounded-3xl border border-white/10">
+          <AlertCircle className="h-20 w-20 text-red-400 mx-auto mb-6" />
+          <h2 className="text-3xl font-bold text-white mb-4">System Error</h2>
           <p className="text-red-300 mb-6 text-lg">{error}</p>
           <button 
             onClick={restartApp}
             className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-8 py-3 rounded-xl hover:from-red-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 font-semibold"
           >
-            Reintentar
+            Retry System
           </button>
         </div>
       </div>
@@ -326,7 +326,7 @@ const GestureDetectionApp: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black">
       {/* Header */}
       <Header 
         isAiReady={!!gestureRecognizer}
@@ -334,7 +334,7 @@ const GestureDetectionApp: React.FC = () => {
         isRecording={isRecording}
       />
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-8 py-12">
         {/* Control Panel */}
         <ControlPanel
           isRecording={isRecording}
@@ -345,9 +345,9 @@ const GestureDetectionApp: React.FC = () => {
         />
 
         {/* Main Layout */}
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 mb-12">
           {/* Video Feed */}
-          <div className="xl:col-span-6">
+          <div className="xl:col-span-7">
             <VideoFeed
               ref={videoFeedRef}
               stream={stream}
@@ -357,22 +357,21 @@ const GestureDetectionApp: React.FC = () => {
             />
           </div>
 
-          {/* Current Gesture */}
-          <div className="xl:col-span-3">
+          {/* Right Panel */}
+          <div className="xl:col-span-5 space-y-8">
+            {/* Current Gesture */}
             <CurrentGesture
               gesture={currentGestureDisplay}
               isRecording={isRecording}
             />
-          </div>
 
-          {/* Statistics */}
-          <div className="xl:col-span-3">
+            {/* Statistics */}
             <Statistics gestureHistory={gestureHistory} />
           </div>
         </div>
 
         {/* History */}
-        <div className="mb-8">
+        <div className="mb-12">
           <GestureHistory
             gestureHistory={gestureHistory}
             onClearHistory={clearHistory}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Pause, RotateCcw, Camera, Settings, Zap } from 'lucide-react';
+import { Play, Pause, RotateCcw, Camera, Settings, Zap, Power } from 'lucide-react';
 
 interface ControlPanelProps {
   isRecording: boolean;
@@ -17,65 +17,66 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   onRestartCamera
 }) => {
   return (
-    <div className="flex justify-center gap-4 mb-8">
-      {/* Main control button */}
-      <button
-        onClick={onToggleRecording}
-        disabled={!isReady}
-        className={`group relative flex items-center gap-4 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
-          isRecording 
-            ? 'bg-gradient-to-r from-red-500 via-pink-500 to-red-600 text-white shadow-lg shadow-red-500/25 hover:shadow-red-500/40' 
-            : 'bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white shadow-lg shadow-green-500/25 hover:shadow-green-500/40'
-        } ${!isReady ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-2xl'}`}
-      >
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        
-        {/* Icon */}
-        <div className="relative z-10">
-          {isRecording ? (
-            <Pause className="h-7 w-7 animate-pulse" />
-          ) : (
-            <Play className="h-7 w-7 group-hover:animate-bounce" />
-          )}
+    <div className="flex justify-center mb-12">
+      <div className="bg-black/50 backdrop-blur-xl rounded-2xl p-6 border border-white/10 shadow-2xl">
+        <div className="flex items-center gap-4">
+          {/* Main control button */}
+          <button
+            onClick={onToggleRecording}
+            disabled={!isReady}
+            className={`group relative flex items-center gap-4 px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
+              isRecording 
+                ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg shadow-red-500/25 hover:shadow-red-500/40' 
+                : 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40'
+            } ${!isReady ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-2xl'}`}
+          >
+            {/* Animated background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            {/* Icon */}
+            <div className="relative z-10">
+              {isRecording ? (
+                <Pause className="h-6 w-6" />
+              ) : (
+                <Play className="h-6 w-6" />
+              )}
+            </div>
+            
+            {/* Text */}
+            <span className="relative z-10">
+              {isRecording ? 'Stop Detection' : 'Start Detection'}
+            </span>
+            
+            {/* Status indicator */}
+            {isRecording && (
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-400 rounded-full animate-ping"></div>
+            )}
+          </button>
+          
+          {/* Secondary controls */}
+          <div className="flex gap-3">
+            <ControlButton
+              icon={<RotateCcw className="h-5 w-5" />}
+              label="Clear"
+              onClick={onClearHistory}
+              variant="secondary"
+            />
+            
+            <ControlButton
+              icon={<Camera className="h-5 w-5" />}
+              label="Reset Camera"
+              onClick={onRestartCamera}
+              variant="secondary"
+            />
+            
+            <ControlButton
+              icon={<Settings className="h-5 w-5" />}
+              label="Settings"
+              onClick={() => {/* TODO: Add settings */}}
+              variant="secondary"
+            />
+          </div>
         </div>
-        
-        {/* Text */}
-        <span className="relative z-10">
-          {isRecording ? 'Pausar Detección' : 'Iniciar Detección'}
-        </span>
-        
-        {/* Status indicator */}
-        {isRecording && (
-          <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-400 rounded-full animate-ping"></div>
-        )}
-      </button>
-      
-      {/* Secondary controls */}
-      <div className="flex gap-3">
-        <ControlButton
-          icon={<RotateCcw className="h-6 w-6" />}
-          label="Limpiar"
-          onClick={onClearHistory}
-          color="from-gray-600 to-gray-700"
-          hoverColor="from-gray-700 to-gray-800"
-        />
-        
-        <ControlButton
-          icon={<Camera className="h-6 w-6" />}
-          label="Cámara"
-          onClick={onRestartCamera}
-          color="from-blue-500 to-cyan-500"
-          hoverColor="from-blue-600 to-cyan-600"
-        />
-        
-        <ControlButton
-          icon={<Settings className="h-6 w-6" />}
-          label="Config"
-          onClick={() => {/* TODO: Add settings */}}
-          color="from-purple-500 to-indigo-500"
-          hoverColor="from-purple-600 to-indigo-600"
-        />
       </div>
     </div>
   );
@@ -85,28 +86,33 @@ interface ControlButtonProps {
   icon: React.ReactNode;
   label: string;
   onClick: () => void;
-  color: string;
-  hoverColor: string;
+  variant?: 'primary' | 'secondary';
 }
 
 const ControlButton: React.FC<ControlButtonProps> = ({ 
   icon, 
   label, 
   onClick, 
-  color, 
-  hoverColor 
+  variant = 'secondary' 
 }) => {
+  const baseClasses = "group relative flex items-center gap-3 px-6 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 font-medium border";
+  
+  const variantClasses = variant === 'primary' 
+    ? "bg-gradient-to-r from-violet-500 to-purple-500 text-white border-violet-500/30 hover:shadow-violet-500/25"
+    : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white";
+
   return (
     <button
       onClick={onClick}
-      className={`group relative flex items-center gap-3 px-6 py-4 bg-gradient-to-r ${color} hover:${hoverColor} text-white rounded-2xl transition-all duration-300 transform hover:scale-105 font-bold text-lg shadow-lg backdrop-blur-md border border-white/10`}
+      className={`${baseClasses} ${variantClasses}`}
+      title={label}
     >
       {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       
       {/* Content */}
       <div className="relative z-10 flex items-center gap-3">
-        <div className="group-hover:animate-pulse">
+        <div className="group-hover:scale-110 transition-transform duration-200">
           {icon}
         </div>
         <span className="hidden sm:block">{label}</span>

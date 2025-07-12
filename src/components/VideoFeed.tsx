@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { Camera, Wifi } from 'lucide-react';
+import { Camera, Play, Pause } from 'lucide-react';
 import type { DetectedGesture } from '../types/mediapipe';
 import GestureOverlay from './GestureOverlay';
 
@@ -24,36 +24,39 @@ const VideoFeed = forwardRef<{
 
   return (
     <div className="relative group">
-      {/* Glass card container */}
-      <div className="backdrop-blur-xl bg-white/5 rounded-3xl p-6 border border-white/10 shadow-2xl hover:bg-white/10 transition-all duration-500">
+      <div className="relative bg-black/50 backdrop-blur-xl rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Camera className="h-6 w-6 text-blue-400" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+        <div className="absolute top-0 left-0 right-0 z-20 p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Camera className="h-6 w-6 text-white" />
+                {stream && <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>}
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Live Camera Feed</h3>
+                <p className="text-sm text-slate-400">Real-time gesture detection</p>
+              </div>
             </div>
-            <h2 className="text-2xl font-bold text-white">Cámara en Vivo</h2>
+            
+            {isRecording && (
+              <div className="flex items-center gap-2 bg-red-500/20 backdrop-blur-md px-4 py-2 rounded-full border border-red-500/30">
+                <div className="w-2 h-2 bg-red-400 rounded-full animate-ping"></div>
+                <span className="text-red-400 text-sm font-bold uppercase tracking-wide">Recording</span>
+              </div>
+            )}
           </div>
-          
-          {isRecording && (
-            <div className="flex items-center gap-2 backdrop-blur-md bg-red-500/20 px-4 py-2 rounded-full border border-red-500/30">
-              <div className="w-2 h-2 bg-red-400 rounded-full animate-ping"></div>
-              <Wifi className="h-4 w-4 text-red-400" />
-              <span className="text-red-400 text-sm font-bold">EN VIVO</span>
-            </div>
-          )}
         </div>
 
         {/* Video container */}
-        <div className="relative rounded-2xl overflow-hidden bg-black/50 backdrop-blur-sm border border-white/10">
+        <div className="relative aspect-video bg-gradient-to-br from-slate-900 to-black">
           {/* Video element */}
           <video
             ref={videoRef}
             autoPlay
             playsInline
             muted
-            className="w-full h-auto aspect-video object-cover"
+            className="w-full h-full object-cover"
           />
           
           {/* Canvas overlay */}
@@ -64,14 +67,27 @@ const VideoFeed = forwardRef<{
 
           {/* Loading state */}
           {!stream && !error && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-900/90 to-purple-900/90 backdrop-blur-sm">
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-900/95 to-black/95 backdrop-blur-sm">
               <div className="text-center text-white">
-                <div className="relative mb-6">
-                  <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/20 border-t-blue-400 mx-auto"></div>
-                  <Camera className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-blue-400" />
+                <div className="relative mb-8">
+                  <div className="w-20 h-20 border-4 border-white/10 border-t-violet-500 rounded-full animate-spin mx-auto"></div>
+                  <Camera className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-8 text-violet-400" />
                 </div>
-                <p className="text-xl font-semibold">Iniciando cámara...</p>
-                <p className="text-sm text-slate-300 mt-2">Preparando el feed de video</p>
+                <h3 className="text-2xl font-bold mb-2">Initializing Camera</h3>
+                <p className="text-slate-400">Setting up video feed...</p>
+              </div>
+            </div>
+          )}
+
+          {/* Error state */}
+          {error && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-red-900/95 to-black/95 backdrop-blur-sm">
+              <div className="text-center text-white max-w-md px-6">
+                <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Camera className="h-10 w-10 text-red-400" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-red-400">Camera Error</h3>
+                <p className="text-slate-300">{error}</p>
               </div>
             </div>
           )}
@@ -81,21 +97,25 @@ const VideoFeed = forwardRef<{
             <GestureOverlay gestures={detectedGestures} />
           )}
 
-          {/* Decorative elements */}
-          <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-blue-400/50 rounded-tl-lg"></div>
-          <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-blue-400/50 rounded-tr-lg"></div>
-          <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-blue-400/50 rounded-bl-lg"></div>
-          <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-blue-400/50 rounded-br-lg"></div>
+          {/* Corner decorations */}
+          <div className="absolute top-4 left-4 w-6 h-6 border-l-2 border-t-2 border-violet-400/50"></div>
+          <div className="absolute top-4 right-4 w-6 h-6 border-r-2 border-t-2 border-violet-400/50"></div>
+          <div className="absolute bottom-4 left-4 w-6 h-6 border-l-2 border-b-2 border-violet-400/50"></div>
+          <div className="absolute bottom-4 right-4 w-6 h-6 border-r-2 border-b-2 border-violet-400/50"></div>
         </div>
 
-        {/* Video info */}
-        <div className="mt-4 flex justify-between items-center text-sm text-slate-400">
-          <span>Resolución: 640x480</span>
-          <span>FPS: 30</span>
-          <span className={`flex items-center gap-1 ${stream ? 'text-green-400' : 'text-red-400'}`}>
-            <div className={`w-2 h-2 rounded-full ${stream ? 'bg-green-400' : 'bg-red-400'} animate-pulse`}></div>
-            {stream ? 'Conectado' : 'Desconectado'}
-          </span>
+        {/* Footer info */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+          <div className="flex justify-between items-center text-sm">
+            <div className="flex items-center gap-4 text-slate-400">
+              <span>Resolution: 640x480</span>
+              <span>FPS: 30</span>
+            </div>
+            <div className={`flex items-center gap-2 ${stream ? 'text-green-400' : 'text-red-400'}`}>
+              <div className={`w-2 h-2 rounded-full ${stream ? 'bg-green-400' : 'bg-red-400'} animate-pulse`}></div>
+              <span className="font-medium">{stream ? 'Connected' : 'Disconnected'}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
