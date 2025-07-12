@@ -69,6 +69,7 @@ const Header: React.FC<HeaderProps> = ({ isAiReady, isCameraConnected, isRecordi
       </div>
     </header>
   )
+  )
   );
 };
 
