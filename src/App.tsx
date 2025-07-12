@@ -1,6 +1,7 @@
 import { FilesetResolver, GestureRecognizer } from '@mediapipe/tasks-vision';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { DetectedGesture, GestureHistory } from './types/mediapipe';
+import CameraMockup from './pages/CameraMockup';
 
 // Components
 import Header from './components/Header';
@@ -16,6 +17,7 @@ import { AlertCircle, Loader2 } from 'lucide-react';
 const HAND_COLORS = ['#8B5CF6', '#EC4899', '#06B6D4', '#10B981', '#F59E0B'];
 
 const GestureDetectionApp: React.FC = () => {
+  const [showMockup, setShowMockup] = useState(false);
   const videoFeedRef = useRef<{
     video: HTMLVideoElement | null;
     canvas: HTMLCanvasElement | null;
@@ -274,6 +276,11 @@ const GestureDetectionApp: React.FC = () => {
     setError(null);
   };
 
+  // Toggle between main app and mockup
+  if (showMockup) {
+    return <CameraMockup />;
+  }
+
   const restartCamera = async () => {
     stopCamera();
     setTimeout(async () => {
@@ -333,6 +340,16 @@ const GestureDetectionApp: React.FC = () => {
         isCameraConnected={!!stream}
         isRecording={isRecording}
       />
+
+      {/* Toggle button for mockup */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          onClick={() => setShowMockup(!showMockup)}
+          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl font-semibold hover:scale-105 transition-transform"
+        >
+          View Mockup
+        </button>
+      </div>
 
       <div className="container mx-auto px-8 py-12">
         {/* Control Panel */}
