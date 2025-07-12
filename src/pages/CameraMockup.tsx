@@ -1,25 +1,5 @@
 import React from 'react';
-import { 
-  Camera, 
-  Play, 
-  Pause, 
-  Settings, 
-  Maximize, 
-  Volume2, 
-  Wifi, 
-  Battery, 
-  Signal,
-  Record,
-  Square,
-  RotateCcw,
-  Zap,
-  Eye,
-  Target,
-  Activity,
-  TrendingUp,
-  Award,
-  Clock
-} from 'lucide-react';
+import { Camera, Play, Pause, Settings, Maximize, Volume2, Wifi, Battery, Signal, SwordIcon as Record, Square, RotateCcw, Zap, Eye, Target, Activity, TrendingUp, Award, Clock } from 'lucide-react';
 
 const CameraMockup: React.FC = () => {
   return (
